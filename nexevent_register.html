@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنشاء حساب - NexEvent</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#9b59b6;--secondary:#8e44ad;--dark:#1a1a1a;--light:#f8f9fa;--white:#ffffff;--gray:#6c757d;--success:#28a745;--danger:#dc3545;--shadow:0 4px 6px rgba(0,0,0,0.1);--radius:12px}
+body{font-family:'Cairo',sans-serif;background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-container{width:100%;max-width:500px}
+.auth-card{background:var(--white);border-radius:20px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.auth-header{text-align:center;margin-bottom:30px}
+.auth-logo{width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.5rem;color:var(--white)}
+.auth-header h1{font-size:1.8rem;margin-bottom:10px;color:var(--dark)}
+.auth-header p{color:var(--gray);font-size:0.95rem}
+.back-link{display:inline-flex;align-items:center;gap:8px;color:var(--gray);margin-bottom:20px;text-decoration:none;transition:all 0.3s}
+.back-link:hover{color:var(--primary)}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-weight:600;margin-bottom:8px;color:var(--dark);display:flex;align-items:center;gap:8px}
+.form-group label i{color:var(--primary)}
+.form-group input,.form-group select{width:100%;padding:14px 18px;border:2px solid #e0e0e0;border-radius:var(--radius);font-family:inherit;font-size:1rem;transition:all 0.3s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,215,0,0.1)}
+.password-input{position:relative}
+.password-input input{padding-left:50px}
+.password-input .toggle-password{position:absolute;left:15px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray);cursor:pointer;font-size:1.1rem}
+.password-input .toggle-password:hover{color:var(--primary)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.btn-submit{width:100%;background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white);border:none;padding:16px;border-radius:var(--radius);font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(155,89,182,0.4)}
+.btn-submit:disabled{opacity:0.7;cursor:not-allowed}
+.form-footer{text-align:center;margin-top:25px;color:var(--gray)}
+.form-footer a{color:var(--primary);font-weight:600;text-decoration:none}
+.form-footer a:hover{text-decoration:underline}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--white);padding:15px 25px;border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:12px;min-width:300px}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-right:4px solid var(--success)}
+.toast.success i{color:var(--success)}
+.toast.error{border-right:4px solid var(--danger)}
+.toast.error i{color:var(--danger)}
+@media (max-width:600px){
+.auth-card{padding:30px 20px}
+.form-row{grid-template-columns:1fr}
+.auth-header h1{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+<div class="auth-container">
+<div class="auth-card">
+<a href="index.html" class="back-link">
+<i class="fas fa-arrow-right"></i>
+<span>العودة للرئيسية</span>
+</a>
+<div class="auth-header">
+<div class="auth-logo">
+<i class="fas fa-user-plus"></i>
+</div>
+<h1>إنشاء حساب جديد</h1>
+<p>انضم إلينا واحجز تذاكرك بسهولة</p>
+</div>
+<form id="registerForm">
+<div class="form-group">
+<label><i class="fas fa-user"></i> الاسم الكامل</label>
+<input type="text" id="fullName" required placeholder="أدخل اسمك الكامل">
+</div>
+<div class="form-group">
+<label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+<input type="email" id="email" required placeholder="example@email.com">
+</div>
+<div class="form-group">
+<label><i class="fas fa-phone"></i> رقم الجوال</label>
+<input type="tel" id="phone" required placeholder="05xxxxxxxx" pattern="[0-9]{10}">
+</div>
+<div class="form-row">
+<div class="form-group">
+<label><i class="fas fa-venus-mars"></i> الجنس</label>
+<select id="gender" required>
+<option value="">اختر</option>
+<option value="male">ذكر</option>
+<option value="female">أنثى</option>
+</select>
+</div>
+<div class="form-group">
+<label><i class="fas fa-calendar"></i> تاريخ الميلاد</label>
+<input type="date" id="birthdate" required>
+</div>
+</div>
+<div class="form-group">
+<label><i class="fas fa-lock"></i> كلمة المرور</label>
+<div class="password-input">
+<input type="password" id="password" required placeholder="••••••••" minlength="6">
+<button type="button" class="toggle-password" onclick="togglePassword('password')">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<div class="form-group">
+<label><i class="fas fa-lock"></i> تأكيد كلمة المرور</label>
+<div class="password-input">
+<input type="password" id="confirmPassword" required placeholder="••••••••">
+<button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+<i class="fas fa-eye"></i>
+</button>
+</div>
+</div>
+<button type="submit" class="btn-submit" id="submitBtn">
+<i class="fas fa-user-plus"></i>
+<span>إنشاء الحساب</span>
+</button>
+<div class="form-footer">
+<p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+</div>
+</form>
+</div>
+</div>
+<div class="toast" id="toast">
+<i class="fas fa-check-circle"></i>
+<span id="toastMessage"></span>
+</div>
+<script>
+function togglePassword(inputId){
+const input=document.getElementById(inputId);
+const icon=input.parentElement.querySelector('.toggle-password i');
+if(input.type==='password'){
+input.type='text';
+icon.classList.replace('fa-eye','fa-eye-slash');
+}else{
+input.type='password';
+icon.classList.replace('fa-eye-slash','fa-eye');
+}
+}
+function showToast(message,type='success'){
+const toast=document.getElementById('toast');
+const toastMessage=document.getElementById('toastMessage');
+const icon=toast.querySelector('i');
+toastMessage.textContent=message;
+toast.className='toast '+type;
+if(type==='success'){
+icon.className='fas fa-check-circle';
+}else{
+icon.className='fas fa-exclamation-circle';
+}
+toast.classList.add('show');
+setTimeout(()=>{
+toast.classList.remove('show');
+},3000);
+}
+document.getElementById('registerForm').addEventListener('submit',function(e){
+e.preventDefault();
+const fullName=document.getElementById('fullName').value.trim();
+const email=document.getElementById('email').value.trim();
+const phone=document.getElementById('phone').value.trim();
+const gender=document.getElementById('gender').value;
+const birthdate=document.getElementById('birthdate').value;
+const password=document.getElementById('password').value;
+const confirmPassword=document.getElementById('confirmPassword').value;
+const submitBtn=document.getElementById('submitBtn');
+if(fullName.length<3){
+showToast('الاسم يجب أن يكون 3 أحرف على الأقل','error');
+return;
+}
+if(!email.includes('@')){
+showToast('البريد الإلكتروني غير صحيح','error');
+return;
+}
+if(phone.length!==10||!phone.startsWith('05')){
+showToast('رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام','error');
+return;
+}
+if(password.length<6){
+showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل','error');
+return;
+}
+if(password!==confirmPassword){
+showToast('كلمات المرور غير متطابقة','error');
+return;
+}
+const users=JSON.parse(localStorage.getItem('nexevent_users')||'[]');
+const existingUser=users.find(u=>u.email===email);
+if(existingUser){
+showToast('البريد الإلكتروني مسجل مسبقاً','error');
+return;
+}
+submitBtn.disabled=true;
+submitBtn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري التسجيل...';
+setTimeout(()=>{
+const user={
+id:Date.now(),
+fullName,
+email,
+phone,
+gender,
+birthdate,
+password,
+createdAt:new Date().toISOString()
+};
+users.push(user);
+localStorage.setItem('nexevent_users',JSON.stringify(users));
+localStorage.setItem('nexevent_currentUser',JSON.stringify({...user,password:undefined}));
+showToast('تم إنشاء الحساب بنجاح!','success');
+setTimeout(()=>{
+window.location.href='events.html';
+},1500);
+},1000);
+});
+</script>
+</body>
+</html>

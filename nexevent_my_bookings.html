@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حجوزاتي - NexEvent</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#9b59b6;--secondary:#8e44ad;--dark:#1a1a1a;--light:#f8f9fa;--white:#ffffff;--gray:#6c757d;--success:#28a745;--danger:#dc3545;--warning:#ffc107;--shadow:0 4px 6px rgba(0,0,0,0.1);--radius:12px}
+body{font-family:'Cairo',sans-serif;background:var(--light);color:var(--dark);line-height:1.6}
+.navbar{background:var(--white);box-shadow:var(--shadow);position:sticky;top:0;z-index:1000;padding:15px 0}
+.nav-container{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo i{font-size:2rem;color:var(--primary)}
+.nav-menu{display:flex;list-style:none;gap:5px;align-items:center}
+.nav-menu a{padding:10px 18px;border-radius:var(--radius);font-weight:600;transition:all 0.3s;display:flex;align-items:center;gap:8px;color:var(--dark);text-decoration:none}
+.nav-menu a:hover,.nav-menu a.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white)}
+.container{max-width:1200px;margin:0 auto;padding:40px 20px}
+.page-header{margin-bottom:40px}
+.page-header h1{font-size:2.5rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.page-header p{color:var(--gray);font-size:1.1rem}
+.bookings-list{display:flex;flex-direction:column;gap:25px}
+.booking-card{background:var(--white);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto;gap:25px;align-items:center;transition:all 0.3s}
+.booking-card:hover{box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+.booking-icon{width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--white)}
+.booking-info h3{font-size:1.4rem;margin-bottom:10px;color:var(--dark)}
+.booking-details{display:flex;gap:25px;flex-wrap:wrap;margin-bottom:15px}
+.detail-item{display:flex;align-items:center;gap:8px;color:var(--gray);font-size:0.95rem}
+.detail-item i{color:var(--primary);width:18px}
+.booking-meta{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.booking-id{font-size:0.85rem;color:var(--gray);background:var(--light);padding:5px 12px;border-radius:20px}
+.status-badge{padding:8px 18px;border-radius:20px;font-weight:700;font-size:0.9rem}
+.status-badge.confirmed{background:rgba(40,167,69,0.1);color:var(--success)}
+.status-badge.cancelled{background:rgba(220,53,69,0.1);color:var(--danger)}
+.status-badge.pending{background:rgba(255,193,7,0.1);color:var(--warning)}
+.booking-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.btn-view-ticket{background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white);border:none;padding:12px 25px;border-radius:var(--radius);font-weight:700;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:8px;text-decoration:none}
+.btn-view-ticket:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(155,89,182,0.3)}
+.btn-cancel{background:transparent;border:2px solid var(--danger);color:var(--danger);padding:10px 20px;border-radius:var(--radius);font-weight:600;cursor:pointer;transition:all 0.3s;font-size:0.9rem}
+.btn-cancel:hover{background:var(--danger);color:var(--white)}
+.no-bookings{text-align:center;padding:80px 20px}
+.no-bookings i{font-size:5rem;color:var(--primary);opacity:0.3;margin-bottom:20px}
+.no-bookings h2{font-size:1.8rem;margin-bottom:15px;color:var(--dark)}
+.no-bookings p{color:var(--gray);margin-bottom:30px;font-size:1.1rem}
+.btn-browse{background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white);border:none;padding:15px 40px;border-radius:var(--radius);font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:10px}
+.btn-browse:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(155,89,182,0.4)}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.modal.active{display:flex}
+.modal-content{background:var(--white);border-radius:var(--radius);width:100%;max-width:500px;animation:slideUp 0.3s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(50px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{padding:25px;border-bottom:2px solid var(--light);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:1.5rem;display:flex;align-items:center;gap:10px}
+.modal-close{background:none;border:none;font-size:2rem;color:var(--gray);cursor:pointer}
+.modal-close:hover{color:var(--danger)}
+.modal-body{padding:30px;text-align:center}
+.ticket-qr{width:250px;height:250px;background:var(--light);border-radius:var(--radius);margin:0 auto 25px;display:flex;align-items:center;justify-content:center;border:3px dashed var(--primary)}
+.ticket-qr i{font-size:8rem;color:var(--primary);opacity:0.5}
+.ticket-info{background:var(--light);padding:20px;border-radius:var(--radius);margin-bottom:20px;text-align:right}
+.ticket-info-item{display:flex;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #ddd}
+.ticket-info-item:last-child{border:none;margin:0}
+.ticket-info-item strong{color:var(--dark)}
+.ticket-info-item span{color:var(--gray)}
+.btn-download{background:linear-gradient(135deg,var(--primary),var(--secondary));color:var(--white);border:none;padding:14px 30px;border-radius:var(--radius);font-weight:700;cursor:pointer;width:100%;font-size:1.05rem;display:flex;align-items:center;justify-content:center;gap:10px}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--white);padding:15px 25px;border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:10000;opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:12px}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-right:4px solid var(--success)}
+.toast.success i{color:var(--success)}
+@media (max-width:768px){
+.booking-card{grid-template-columns:1fr;text-align:center;gap:20px}
+.booking-icon{margin:0 auto}
+.booking-details{justify-content:center}
+.booking-actions{flex-direction:row;align-items:center;justify-content:center;width:100%}
+.btn-view-ticket,.btn-cancel{width:100%}
+}
+</style>
+</head>
+<body>
+<nav class="navbar">
+<div class="nav-container">
+<a href="index.html" class="logo">
+<i class="fas fa-ticket-alt"></i>
+<span>NexEvent</span>
+</a>
+<ul class="nav-menu">
+<li><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
+<li><a href="events.html"><i class="fas fa-calendar"></i> الفعاليات</a></li>
+<li><a href="my-bookings.html" class="active"><i class="fas fa-ticket-alt"></i> حجوزاتي</a></li>
+<li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</a></li>
+</ul>
+</div>
+</nav>
+<div class="container">
+<div class="page-header">
+<h1>حجوزاتي</h1>
+<p>إدارة جميع حجوزاتك في مكان واحد</p>
+</div>
+<div class="bookings-list" id="bookingsList"></div>
+<div class="no-bookings" id="noBookings" style="display:none">
+<i class="fas fa-ticket-alt"></i>
+<h2>لا توجد حجوزات بعد</h2>
+<p>ابدأ بحجز تذكرتك الأولى واستمتع بأفضل الفعاليات</p>
+<a href="events.html" class="btn-browse">
+<i class="fas fa-search"></i>
+<span>تصفح الفعاليات</span>
+</a>
+</div>
+</div>
+<div class="modal" id="ticketModal">
+<div class="modal-content">
+<div class="modal-header">
+<h3><i class="fas fa-ticket-alt"></i> تذكرتك الإلكترونية</h3>
+<button class="modal-close" onclick="closeTicketModal()">&times;</button>
+</div>
+<div class="modal-body">
+<div class="ticket-qr">
+<i class="fas fa-qrcode"></i>
+</div>
+<div class="ticket-info" id="ticketInfo"></div>
+<button class="btn-download" onclick="downloadTicket()">
+<i class="fas fa-download"></i>
+<span>تحميل التذكرة</span>
+</button>
+</div>
+</div>
+</div>
+<div class="toast" id="toast">
+<i class="fas fa-check-circle"></i>
+<span id="toastMessage"></span>
+</div>
+<script>
+let currentTicket=null;
+function showToast(message,type='success'){
+const toast=document.getElementById('toast');
+const toastMessage=document.getElementById('toastMessage');
+const icon=toast.querySelector('i');
+toastMessage.textContent=message;
+toast.className='toast '+type;
+if(type==='success'){
+icon.className='fas fa-check-circle';
+}else{
+icon.className='fas fa-exclamation-circle';
+}
+toast.classList.add('show');
+setTimeout(()=>{
+toast.classList.remove('show');
+},3000);
+}
+function viewTicket(booking){
+currentTicket=booking;
+const ticketInfo=document.getElementById('ticketInfo');
+ticketInfo.innerHTML=`
+<div class="ticket-info-item">
+<strong>الفعالية:</strong>
+<span>${booking.eventTitle}</span>
+</div>
+<div class="ticket-info-item">
+<strong>التاريخ:</strong>
+<span>${new Date(booking.eventDate).toLocaleDateString('ar-SA',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
+</div>
+<div class="ticket-info-item">
+<strong>الموقع:</strong>
+<span>${booking.eventVenue}</span>
+</div>
+<div class="ticket-info-item">
+<strong>عدد التذاكر:</strong>
+<span>${booking.quantity} تذكرة</span>
+</div>
+<div class="ticket-info-item">
+<strong>رمز الحجز:</strong>
+<span>${booking.qrCode}</span>
+</div>
+<div class="ticket-info-item">
+<strong>المبلغ المدفوع:</strong>
+<span>${booking.totalPrice.toLocaleString('ar-SA')} ريال</span>
+</div>
+`;
+document.getElementById('ticketModal').classList.add('active');
+}
+function closeTicketModal(){
+document.getElementById('ticketModal').classList.remove('active');
+}
+function downloadTicket(){
+showToast('تم تحميل التذكرة بنجاح!','success');
+closeTicketModal();
+}
+function cancelBooking(bookingId){
+if(!confirm('هل أنت متأكد من إلغاء هذا الحجز؟ سيتم استرجاع المبلغ خلال 7-10 أيام عمل.')){
+return;
+}
+const bookings=JSON.parse(localStorage.getItem('nexevent_bookings')||'[]');
+const bookingIndex=bookings.findIndex(b=>b.id===bookingId);
+if(bookingIndex!==-1){
+bookings[bookingIndex].status='cancelled';
+localStorage.setItem('nexevent_bookings',JSON.stringify(bookings));
+showToast('تم إلغاء الحجز بنجاح','success');
+loadBookings();
+}
+}
+function loadBookings(){
+const user=JSON.parse(localStorage.getItem('nexevent_currentUser')||'null');
+if(!user){
+window.location.href='login.html';
+return;
+}
+const bookings=JSON.parse(localStorage.getItem('nexevent_bookings')||'[]');
+const userBookings=bookings.filter(b=>b.userId===user.id);
+const bookingsList=document.getElementById('bookingsList');
+const noBookings=document.getElementById('noBookings');
+if(userBookings.length===0){
+bookingsList.innerHTML='';
+noBookings.style.display='block';
+return;
+}
+noBookings.style.display='none';
+bookingsList.innerHTML='';
+userBookings.sort((a,b)=>new Date(b.bookingDate)-new Date(a.bookingDate)).forEach(booking=>{
+const card=document.createElement('div');
+card.className='booking-card';
+const statusText={
+confirmed:'مؤكد',
+cancelled:'ملغي',
+pending:'قيد المراجعة'
+};
+card.innerHTML=`
+<div class="booking-icon">
+<i class="fas fa-ticket-alt"></i>
+</div>
+<div class="booking-info">
+<h3>${booking.eventTitle}</h3>
+<div class="booking-details">
+<div class="detail-item">
+<i class="fas fa-calendar"></i>
+<span>${new Date(booking.eventDate).toLocaleDateString('ar-SA',{year:'numeric',month:'short',day:'numeric'})}</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-map-marker-alt"></i>
+<span>${booking.eventVenue}</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-ticket-alt"></i>
+<span>${booking.quantity} تذكرة</span>
+</div>
+<div class="detail-item">
+<i class="fas fa-money-bill"></i>
+<span>${booking.totalPrice.toLocaleString('ar-SA')} ريال</span>
+</div>
+</div>
+<div class="booking-meta">
+<span class="booking-id">رقم الحجز: ${booking.id}</span>
+<span class="status-badge ${booking.status}">${statusText[booking.status]}</span>
+</div>
+</div>
+<div class="booking-actions">
+${booking.status==='confirmed'?`
+<button class="btn-view-ticket" onclick='viewTicket(${JSON.stringify(booking)})'>
+<i class="fas fa-qrcode"></i>
+عرض التذكرة
+</button>
+<button class="btn-cancel" onclick="cancelBooking(${booking.id})">
+<i class="fas fa-times"></i>
+إلغاء الحجز
+</button>
+`:''}
+${booking.status==='cancelled'?'<span style="color:var(--danger);font-weight:600">تم الإلغاء</span>':''}
+</div>
+`;
+bookingsList.appendChild(card);
+});
+}
+document.addEventListener('DOMContentLoaded',()=>{
+loadBookings();
+document.getElementById('logoutBtn').addEventListener('click',(e)=>{
+e.preventDefault();
+localStorage.removeItem('nexevent_currentUser');
+window.location.href='index.html';
+});
+});
+</script>
+</body>
+</html>
